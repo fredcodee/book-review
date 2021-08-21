@@ -1,0 +1,27 @@
+{% extends 'layout.html'%}
+{% load static%}
+
+{%block title%} edit {{get_book.title}} {%endblock%}
+
+{% block contents%}
+<div class="container">
+    <a href="{% url 'bookpage' get_book.id%}"><p>view page as a user</p></a>
+    <hr>
+    <div class="header">
+        <h3>{{ get_book.title}}</h3>
+        <img src="{{get_book.image.url}}" alt="" class="profile-pic" style="width: 8rem;">
+        <p>by- {{get_book.author}}</p>
+
+    </div>
+    <div>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {%csrf_token%}
+            {{form.as_p}}
+            <div>
+                <input type="submit">
+            </div>
+        </form>
+    </div>
+</div>
+
+{%endblock%}

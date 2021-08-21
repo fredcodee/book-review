@@ -1,0 +1,103 @@
+{% extends 'layout.html'%}
+{% load static%}
+
+{%block title%} {{book.title}} {%endblock%}
+
+{% block links%}
+<link rel="stylesheet" href="{% static 'styles/bookpage.css' %}">
+{% endblock %}
+
+{% block contents%}
+<div class="container">
+    <div class="link">
+        {% if book.author == request.user %}
+            <a href="{% url 'edit_book' book.id %}"> <button type="button" class="btn btn-warning">edit</button></a>
+            {% include 'confirm_delete_modal.html' %}
+            <a href="{% url 'delete_book' book.id %}" class="confirm-delete" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{book.id}}"><button class="btn btn-danger" type="button">Delete Book</button></a>
+
+        {% endif%}
+    </div>
+    <hr>
+
+    <div class="row">
+        <div class="col-sm-4">
+          <img src="{{book.image.url}}">
+        </div>
+        <div class="col-sm-4">
+          <p class="name">Title: {{ book.title }}</p>
+          <p>Author: {{ book.author }}</p>
+          <p>Posted on {{ book.date_posted }}</p>
+          <p>ISBN-10: {{book.book_isbn}}</p>
+        </div>
+    
+        <!--GOODREADS REVIEWS -->
+        <div class="col-sm-4 gd">
+          <h3>Summary</h3>
+          <hr>
+          <p>{{book.summary}}</p>
+        </div>
+    </div>
+    
+    <div class="ratings">
+        <div class="row">
+            <div class="col">
+                <form action="{% url 'like_book' book.id%}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit", name="book_id" value="{{book.id}}" class=" btn btn-primary btn-sm">Like</button> -{{total_likes}} Likes
+                </form>
+            </div>
+            <div class="col">
+                <form action="{% url 'dislike_book' book.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit", name="book_id" value="{{book.id}}" class="btn btn-warning btn-sm">Dislike</button> - {{total_dislikes}} Dislikes
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <div class="reviews">
+        <div class="comment">
+            <form method= "POST" action="{% url 'add_review' book.id%}">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" placeholder="Say something about this book" aria-label="Recipient's username"
+                    aria-describedby="basic-addon2" name="comment">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">Send</span>
+                  </div>
+                </div>
+              </form>
+        </div>
+        <br>
+        <div class="userreviews">
+            <h3>User Reviews</h3>
+            {% for review in reviews %}
+                <div class="list-group">
+                    {% if review.user_id == request.user%}
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1" style="color:black">@{{review.user_id.username}}</p>
+                            <small>{{review.date_posted }}</small>
+                        </div>
+                        <p class="mb-1">{{review.comment}}</p>
+                        </a>
+                        <a href="{% url 'delete_review' review.id %}" class=" btn btn-danger btn-sm">delete</a>
+                        <div class="dropdown-divider"></div>
+                    {%else%}
+                        <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <p class="mb-1" style="color:black">@{{review.user_id.username}}</p>
+                            <small>{{review.date_posted }}</small>
+                        </div>
+                        <p class="mb-1">{{review.comment}}</p>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                    {%endif%}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{%endblock%}

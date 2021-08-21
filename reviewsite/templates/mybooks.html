@@ -1,0 +1,30 @@
+{% extends 'layout.html'%}
+{% load static%}
+
+{%block title%} My Books {%endblock%}
+
+{% block contents%}
+<div class="container">
+    {% for book in books%}
+        <a  href="{% url 'bookpage' book.id %}" style="text-decoration: none; color: black;"><h5>{{book.title}}</h5></a>
+        <a href="{% url 'edit_book' book.id %}"> <button type="button" class="btn btn-warning">edit</button></a>
+        {% include 'confirm_delete_modal.html' %}
+        <a href="{% url 'delete_book' book.id %}" class="confirm-delete" title="Delete" data-toggle="modal" data-target="#confirmDeleteModal" id="deleteButton{{book.id}}"><button class="btn btn-danger" type="button">Delete Book</button></a>
+
+        
+        <hr>
+    {% endfor %}
+</div>
+
+{%endblock%}
+
+{% block scripts %}
+  <script>
+    $(document).on('click', '.confirm-delete', function () {$("#confirmDeleteModal").attr("caller-id", $(this).attr("id"));});
+
+  $(document).on('click', '#confirmDeleteButtonModal', function () {
+    var caller = $("#confirmDeleteButtonModal").closest(".modal").attr("caller-id");
+    window.location = $("#".concat(caller)).attr("href");
+  });
+  </script>
+{%endblock%}

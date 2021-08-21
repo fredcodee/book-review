@@ -1,0 +1,31 @@
+{% extends 'layout.html'%}
+{% load static%}
+
+{%block title%} Add Book {%endblock%}
+
+{% block contents%}
+<div class="container">
+    <div class="header">
+        <p> welcome {{request.user}}</p>
+        <hr>
+        <h5>Add new Book</h5>
+    </div>
+    <div>
+        <form action="{% url 'add_book'%}" method="POST">
+            {%csrf_token%}
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3"></div>
+                <label for="summary" class="form-label">Summary</label>
+                <input type="text" class="form-control" id="summary" name="summary" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-secondary">Submit</button>
+            </div>    
+        </form>
+    </div>
+</div>
+
+{%endblock%}
